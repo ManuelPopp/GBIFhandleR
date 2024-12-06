@@ -1,7 +1,7 @@
 #' Clean geographic coordinates in a data frame
 #'
-#' This function uses the `CoordinateCleaner` package to clean and filter geographic coordinates 
-#' in a data frame, removing problematic records such as duplicates, outliers, invalid points, 
+#' This function uses the `CoordinateCleaner` package to clean and filter geographic coordinates
+#' in a data frame, removing problematic records such as duplicates, outliers, invalid points,
 #' and points located in capitals, centroids, or urban areas.
 #'
 #' @param x A data frame containing geographic data, including coordinates and species information.
@@ -17,20 +17,21 @@
 #' @param remove_sea Logical. If `TRUE`, removes records located in the sea. Default is `TRUE`.
 #' @param remove_urban Logical. If `TRUE`, removes records located in urban areas. Default is `TRUE`.
 #' @param remove_zero Logical. If `TRUE`, removes records with zero latitude or longitude. Default is `TRUE`.
-#' @param outlier_settings A list of additional settings for outlier detection, passed to `CoordinateCleaner::cc_outl`. 
+#' @param outlier_settings A list of additional settings for outlier detection, passed to `CoordinateCleaner::cc_outl`.
 #' @param round_settings A list of additional settings. If not `NULL`, these settings are passed to `CoordinateCleaner::cd_round`.
 #'   Default is `NULL`, which uses standard parameters (`tdi = 1000`, `method = "distance"`, `min_occs = 4`).
 #'
 #' @return A cleaned data frame with problematic records removed based on the specified criteria.
 #'
 #' @details
-#' - This function sequentially applies a series of cleaning functions from the `CoordinateCleaner` package. 
+#' - This function sequentially applies a series of cleaning functions from the `CoordinateCleaner` package.
 #' - Each cleaning step can be enabled or disabled using its corresponding parameter.
 #' - Outlier detection (`cc_outl`) uses customizable parameters via the `outlier_settings` argument.
 #' - Records with `individualCount == 0` or `occurrenceStatus == "ABSENT"` are also removed.
 #'
 #' @examples
 #' # Example: Clean a dataset of species observations
+#' # observations <- get_observations("Tragopogon dubius")
 #' clean_data <- clean_coords(
 #'   x = observations,
 #'   species_column = "species_name",
@@ -66,31 +67,31 @@ clean_coords <- function(
   if (remove_capitals) {
     x <- CoordinateCleaner::cc_cap(x, species = species_column)
   }
-  
+
   if (remove_centroids) {
     x <- CoordinateCleaner::cc_cen(x, species = species_column)
   }
-  
+
   if (remove_duplicates) {
     x <- CoordinateCleaner::cc_dupl(x, species = species_column)
   }
-  
+
   if (remove_gbif) {
     x <- CoordinateCleaner::cc_gbif(x, species = species_column)
   }
-  
+
   if (remove_hotspots) {
     x <- CoordinateCleaner::cc_aohi(x, species = species_column)
   }
-  
+
   if (remove_institutions) {
     x <- CoordinateCleaner::cc_inst(x, species = species_column)
   }
-  
+
   if (remove_invalid) {
     x <- CoordinateCleaner::cc_val(x, species = species_column)
   }
-  
+
   # Remove outliers
   outlier_args <- list(
     x = x,
@@ -99,37 +100,37 @@ clean_coords <- function(
     method = "distance",
     min_occs = 4
   )
-  
+
   if (!is.null(outlier_settings)) {
     outlier_args <- utils::modifyList(outlier_args, outlier_settings)
   }
-  
+
   if (remove_outliers) {
     x <- do.call(CoordinateCleaner::cc_outl, outlier_args)
   }
-  
+
   # Remove raster centroids
   if (!is.null(round_settings)) {
     x <- do.call(CoordinateCleaner::cd_round, round_settings)
   }
-  
+
   if (remove_sea) {
     x <- CoordinateCleaner::cc_sea(x, species = species_column)
   }
-  
+
   if (remove_urban) {
     x <- CoordinateCleaner::cc_urb(x, species = species_column)
   }
-  
+
   if (remove_zero) {
     x <- CoordinateCleaner::cc_zero(x, species = species_column)
   }
-  
+
   # Remove absences
   absences <- which(x$individualCount == 0 | x$occurrenceStatus == "ABSENT")
   if (length(absences) >= 1) {
     x <- x[-absences,]
   }
-  
+
   return(x)
 }

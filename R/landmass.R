@@ -1,10 +1,15 @@
 #' Natural Earth: Landmass at scale 1:110
 #'
-#' This dataset is a SpatVector delineating the Earths landmass.
+#' An `sf::sfc_POLYGON` object representing global landmasses. This dataset is
+#' used as a default background map in the package's plotting functions.
 #'
-#' @format A terra::SpatVector of the Earths landmass:
+#' @format A `sf::sfc_POLYGON` with the following attributes:
 #' \describe{
-#'   \item{landmass}{Polygons.}
+#'   \item{geometry}{Polygon geometries representing landmasses.}
 #' }
 #' @source Natural Earth: https://www.naturalearthdata.com/
+#' @examples
+#' plot(landmass)
+#'
+#' @keywords datasets
 "landmass"

@@ -2,7 +2,7 @@
 #'
 #' This function visualizes the results of a GBIF search, including occurrence records and grid cells used in gridded downloads, over a specified background map.
 #'
-#' @param x A list containing GBIF search results, typically the output from `get_observations()`. 
+#' @param x A list containing GBIF search results, typically the output from `get_observations()`.
 #'   Must include the following components:
 #'   - `data`: A data frame of occurrence records, with columns `decimalLongitude` and `decimalLatitude`.
 #'   - `grid`: A data frame defining grid cells, with columns `lonmin`, `lonmax`, `latmin`, and `latmax`.
@@ -32,13 +32,13 @@
 #' )
 #'
 #' # Example: Use a custom background map
-#' custom_map <- terra::rast("path/to/custom_map.tif")
+#' custom_map <- sf::st_read("path/to/custom_map.shp")
 #' plot.gbif(
 #'   x = gbif_results,
 #'   background = custom_map
 #' )
 #'
-#' @import terra
+#' @import sf
 #' @export
 plot.gbif <- function(
     x, background = "default", cell_colour = "red", ...
@@ -48,22 +48,29 @@ plot.gbif <- function(
     grid <- x$grid
     name <- x$gbifname
   }
-  
+
   if (background == "default") {
     background_map <- landmass
   }
   plot(background_map, ...)
   for (r in 1:nrow(grid)) {
     row <- grid[r, ]
-    cell <- terra::as.polygons(
-      terra::ext(row$lonmin, row$lonmax, row$latmin, row$latmax)
+    bbox <- matrix(
+      c(row$lonmin, row$latmin,
+        row$lonmax, row$latmin,
+        row$lonmax, row$latmax,
+        row$lonmin, row$latmax,
+        row$lonmin, row$latmin),
+      ncol = 2, byrow = TRUE
     )
+    cell <- sf::st_polygon(list(bbox)) %>%
+      sf::st_sfc(crs = 4326)
     plot(cell, border = cell_colour, add = TRUE)
   }
-  
+
   all_entries <- terra::vect(
     data, geom = c("decimalLongitude", "decimalLatitude"), crs = "epsg:4326"
   )
-  
+
   plot(all_entries, add = TRUE)
 }

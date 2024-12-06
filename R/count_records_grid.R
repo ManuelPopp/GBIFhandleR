@@ -23,8 +23,7 @@
 #'     restricting the count to specific types of records.
 #'
 #' @examples
-#' # Example 1: Count records for a species with coordinates and no
-#'     geospatial issues
+#' # Example 1: Count records for a species with coordinates and no geospatial issues
 #' count_records("Ficaria verna Huds.")
 #'
 #' # Example 2: Count records for a species in a specific year

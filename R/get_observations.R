@@ -43,7 +43,6 @@
 #' observations <- get_observations("Tragopogon dubius", return_full = FALSE)
 #'
 #' @import rgbif
-#' @import progress
 #' @import utils
 #' @export
 get_observations <- function(
@@ -54,9 +53,9 @@ get_observations <- function(
   if (!requireNamespace("rgbif", quietly = TRUE)) {
     install.packages("rgbif")
   }
-  
+
   year_interval <- paste(c(start_year, end_year), collapse = ",")
-  
+
   if (match_name) {
     search_name <- match_gbif_name(species_name)
     if (is.na(search_name)) {
@@ -65,14 +64,20 @@ get_observations <- function(
   } else {
     search_name <- species_name
   }
-  
+
   num_records <- count_records(search_name)
-  
+
   if (num_records == 0) {
     df_obs <- check_response(list(data = NULL))
     warning(paste0("No GBIF records found for taxon ", species_name, "."))
   }
-  
+
+  grid <- data.frame(
+    latmin = c(-90), latmax = c(90),
+    lonmin = c(-180), lonmax = c(180),
+    num_records = c(num_records)
+  )
+
   # Check rGBIF limit of 100'000 records
   if (num_records <= config$GBIFMAX) {
     response <- rgbif::occ_search(
@@ -82,37 +87,37 @@ get_observations <- function(
       year = year_interval,
       limit = min(num_records, config$GBIFMAX)
     )
-    
+
     df_obs <- check_response(response)
   } else {
     print(
       paste0("Found too many entries (", num_records, "). Gridding area...")
     )
-    
+
     grid <- data.frame(
       latmin = c(-90, -90), latmax = c(90, 90),
       lonmin = c(-180, 0), lonmax = c(0, 180),
       num_records = c(num_records)
     )
-    
+
     while(max(grid$num_records) > config$GBIFMAX) {
       # Split cells
       grid <- split_grid(grid)
-      
+
       # Count records again
       new_counts <- apply(
         X = as.matrix(grid), MARGIN = 1, FUN = count_records_grid,
         species_name = search_name, year = year_interval
       )
       grid$num_records <- new_counts
-      
+
       # Drop empty cells
       empty <- which(grid$num_records == 0)
       if (length(empty) >= 1) {
         grid <- grid[-empty,]
       }
     }
-    
+
     if (requireNamespace("progress", quietly = TRUE)) {
       library("progress", character.only = TRUE)
       pb <- progress_bar$new(
@@ -120,17 +125,17 @@ get_observations <- function(
         width = 60,
         total = nrow(grid)
       )
-      
+
       fancy_progress <- TRUE
     } else {
       pb = utils::txtProgressBar(min = 0, max = nrow(grid), initial = 0)
       fancy_progress <- FALSE
     }
-    
+
     for (r in 1:nrow(grid)) {
       lat_range <- paste(grid[r, c("latmin", "latmax")], collapse = ",")
       lon_range <- paste(grid[r, c("lonmin", "lonmax")], collapse = ",")
-      
+
       response <- rgbif::occ_search(
         scientificName = search_name,
         hasCoordinate = TRUE,
@@ -140,9 +145,9 @@ get_observations <- function(
         decimalLongitude = lon_range,
         limit = min(num_records, config$GBIFMAX)
       )
-      
+
       df_row <- check_response(response)
-      
+
       if (r == 1) {
         df_obs <- df_row[, config$COLUMNS]
       } else {
@@ -152,7 +157,7 @@ get_observations <- function(
           warning("An error occurred appending the dataframe: ", e$message)
         })
       }
-      
+
       if (fancy_progress) {
         pb$tick()
       } else {
@@ -160,7 +165,7 @@ get_observations <- function(
       }
     }
   }
-  
+
   if (return_full) {
     return(
       list(

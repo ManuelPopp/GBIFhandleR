@@ -4,6 +4,12 @@ Title: GBIFhandleR - A simple R package to obtain GBIF species observations
 Version: 0.1.0
 Authors@R: person("Manuel", "Popp", email = "requests@cdpopp.de", role = c("aut", "cre"))
 Description: This R package provides basic functionalities to download and process species observations from GBIF.
+Encoding: UTF-8
 License: MIT
-Imports: rgbif, CoordinateCleaner
-Suggests: progress, terra
+Imports: sf, utils, rgbif, CoordinateCleaner
+Suggests: progress
+Note: The 'progress' package is used for more beautiful progress bars but is not required.
+RoxygenNote: 7.3.2
+Depends: 
+    R (>= 2.10)
+LazyData: true

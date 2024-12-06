@@ -22,9 +22,8 @@
 #'     only match species or genera).
 #'
 #' @examples
-#' # Example 1: Match a species name. The following will perform fuzzy
-#'     matching and return the corrected, full species name:
-#'     "Pterocarpus rotundifolius (Sond.) Druce"
+#' # Example 1: Match a species name. The following will perform fuzzy matching
+#' # and return the corrected, full species name: "Pterocarpus rotundifolius (Sond.) Druce"
 #' match_gbif_name("Pterocarpus rotundifolia")
 #'
 #' # Example 2: Match a genus name
@@ -36,10 +35,10 @@ match_gbif_name <- function(species_name, rank = "SPECIES") {
   matches <- rgbif::name_backbone(
     species_name, rank = rank, verbose = FALSE, strict = FALSE
   )
-  
+
   if(matches[1,]$matchType == "NONE") {
     return(NA)
   }
-  
+
   return(matches[1,]$scientificName)
 }
