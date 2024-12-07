@@ -31,25 +31,20 @@
 #'
 #' @examples
 #' # Example: Clean a dataset of species observations
-#' # observations <- get_observations("Tragopogon dubius")
+#' data(observations)
 #' clean_data <- clean_coords(
-#'   x = observations,
-#'   species_column = "species_name",
+#'   x = observations$data,
+#'   species_column = "scientificName",
 #'   remove_outliers = TRUE,
 #'   remove_sea = FALSE
 #' )
 #'
-#' # Example: Customize outlier detection settings
-#' clean_data <- clean_coords(
-#'   x = observations,
-#'   outlier_settings = list(tdi = 500, method = "quantile")
-#' )
 #'
 #' @import CoordinateCleaner
 #' @export
 clean_coords <- function(
     x,
-    species_column = "species",
+    species_column = "scientificName",
     remove_capitals = TRUE,
     remove_centroids = TRUE,
     remove_duplicates = TRUE,
@@ -61,7 +56,7 @@ clean_coords <- function(
     remove_sea = TRUE,
     remove_urban = TRUE,
     remove_zero = TRUE,
-    outlier_settings = NULL,
+    outlier_settings = list(tdi = 1000, method = "distance"),
     round_settings = NULL
 ) {
   if (remove_capitals) {
@@ -89,7 +84,7 @@ clean_coords <- function(
   }
 
   if (remove_invalid) {
-    x <- CoordinateCleaner::cc_val(x, species = species_column)
+    x <- CoordinateCleaner::cc_val(x)
   }
 
   # Remove outliers
@@ -119,11 +114,11 @@ clean_coords <- function(
   }
 
   if (remove_urban) {
-    x <- CoordinateCleaner::cc_urb(x, species = species_column)
+    x <- CoordinateCleaner::cc_urb(x)
   }
 
   if (remove_zero) {
-    x <- CoordinateCleaner::cc_zero(x, species = species_column)
+    x <- CoordinateCleaner::cc_zero(x)
   }
 
   # Remove absences

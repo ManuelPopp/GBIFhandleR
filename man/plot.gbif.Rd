@@ -14,8 +14,8 @@ Must include the following components:
 - `gbifname`: The GBIF taxonomic name used in the search.}
 
 \item{background}{The background map to plot. Options:
-- `"default"`: Uses the `landmass` SpatVector stored in the package.
-- A user-specified SpatVector or other compatible map object.}
+- `"default"`: Uses the `landmass` sfc_POLYGON stored in the package.
+- A user-specified sfc_POLYGON or other compatible map object.}
 
 \item{cell_colour}{The color used to outline grid cells in the plot. Default is `"red"`.}
 
@@ -33,21 +33,18 @@ This function visualizes the results of a GBIF search, including occurrence reco
 \details{
 - The function uses the `terra` package for handling spatial objects and plotting.
 - Occurrence records are visualized as points, and grid cells are overlaid as polygons.
-- The `landmass` SpatVector, included in the package as a `.rda` file, is used as the default background map.
+- The `landmass` sfc_POLYGON, included in the package as a `.rda` file, is used as the default background map.
 }
 \examples{
+\dontrun{
 # Example: Plot GBIF search results
+data(landmass)
+data(observations)
 plot.gbif(
-  x = gbif_results,
+  x = observations$data,
   background = "default",
   cell_colour = "blue"
 )
-
-# Example: Use a custom background map
-custom_map <- sf::st_read("path/to/custom_map.shp")
-plot.gbif(
-  x = gbif_results,
-  background = custom_map
-)
+}
 
 }

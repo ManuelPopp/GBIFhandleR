@@ -6,7 +6,7 @@
 \usage{
 clean_coords(
   x,
-  species_column = "species",
+  species_column = "scientificName",
   remove_capitals = TRUE,
   remove_centroids = TRUE,
   remove_duplicates = TRUE,
@@ -18,7 +18,7 @@ clean_coords(
   remove_sea = TRUE,
   remove_urban = TRUE,
   remove_zero = TRUE,
-  outlier_settings = NULL,
+  outlier_settings = list(tdi = 1000, method = "distance"),
   round_settings = NULL
 )
 }
@@ -70,18 +70,13 @@ and points located in capitals, centroids, or urban areas.
 }
 \examples{
 # Example: Clean a dataset of species observations
-# observations <- get_observations("Tragopogon dubius")
+data(observations)
 clean_data <- clean_coords(
-  x = observations,
-  species_column = "species_name",
+  x = observations$data,
+  species_column = "scientificName",
   remove_outliers = TRUE,
   remove_sea = FALSE
 )
 
-# Example: Customize outlier detection settings
-clean_data <- clean_coords(
-  x = observations,
-  outlier_settings = list(tdi = 500, method = "quantile")
-)
 
 }

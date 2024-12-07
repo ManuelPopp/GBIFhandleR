@@ -37,10 +37,12 @@
 #'
 #' @examples
 #' # Example 1: Basic search for a species
-#' observations <- get_observations("Tragopogon dubius")
+#' observations <- get_observations("Grewia rogersii")
 #'
 #' # Example 2: Retrieve only a simplified data frame
+#' \dontrun{
 #' observations <- get_observations("Tragopogon dubius", return_full = FALSE)
+#' }
 #'
 #' @import rgbif
 #' @import utils
@@ -119,8 +121,7 @@ get_observations <- function(
     }
 
     if (requireNamespace("progress", quietly = TRUE)) {
-      library("progress", character.only = TRUE)
-      pb <- progress_bar$new(
+      pb <- progress::progress_bar$new(
         format = "  Downloading [:bar] :percent in :elapsed",
         width = 60,
         total = nrow(grid)

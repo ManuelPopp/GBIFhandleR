@@ -56,9 +56,11 @@ search area into a grid and downloads data in smaller chunks.
 }
 \examples{
 # Example 1: Basic search for a species
-observations <- get_observations("Tragopogon dubius")
+observations <- get_observations("Grewia rogersii")
 
 # Example 2: Retrieve only a simplified data frame
+\dontrun{
 observations <- get_observations("Tragopogon dubius", return_full = FALSE)
+}
 
 }
