@@ -14,5 +14,5 @@ config <- list(
     "decimalLongitude", "year"
   ),
   # GBIF maximum returned records = 100'000. Reduce number to speed up script.
-  GBIFMAX = 100#0#0#0
+  GBIFMAX = 1000#0#0
 )
