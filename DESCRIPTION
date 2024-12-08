@@ -7,9 +7,12 @@ Description: This R package provides basic functionalities to download and proce
 Encoding: UTF-8
 License: MIT + file LICENSE
 Imports: sf, utils, rgbif, CoordinateCleaner
-Suggests: progress
+Suggests: 
+    progress,
+    testthat (>= 3.0.0)
 Note: The 'progress' package is used for more beautiful progress bars but is not required.
 RoxygenNote: 7.3.2
 Depends: 
     R (>= 3.5)
 LazyData: true
+Config/testthat/edition: 3
