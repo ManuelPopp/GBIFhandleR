@@ -11,6 +11,32 @@
 check_response <- function(x) {
   if (is.data.frame(x$data)) {
     data <- x$data
+  } else if (
+    any(unlist(lapply(X = x, FUN = function(i){is.data.frame(i$data)})))
+    ) {
+    print(
+      paste(
+        "Found list of split responses (",
+        paste(names(x), collapse = ", "),
+        "). Trying to combine.", sep = ""
+        )
+    )
+
+    df_list <- list()
+    df_list_index <- 0
+    for (element in x) {
+      if (is.data.frame(element$data)) {
+        df_list_index <- df_list_index + 1
+        df_list[[df_list_index]] <- element$data
+      }
+    }
+
+    data <- do.call(rbind, df_list)
+
+    if (is.null(data)) {
+      data <- data.frame(matrix(ncol = 0, nrow = 1))
+    }
+
   } else {
     print("Response data is not a data.frame.")
     data <- data.frame(matrix(ncol = 0, nrow = 1))
