@@ -6,19 +6,16 @@
 #' It allows retrieval of either a simple data frame or a list containing
 #' additional information related to the retrieval of the data.
 #'
-#' @param species_name A character string specifying the scientific name
-#' of the species to search for.
-#' @param match_name Logical. If `TRUE`, attempts to match the species name
-#' with a GBIF taxon using a helper function (`match_gbif_name`).
-#' The default is `TRUE`.
+#' @param species_name A character string specifying the scientific name of the species to search for.
+#' @param match_name Logical. If `TRUE`, attempts to match the species name with a GBIF taxon using a helper function (`match_gbif_name`).
+#'     The default is `TRUE`.
 #' @param start_year Numeric. The starting year for observations to include.
-#' The default is `1950`.
+#'     The default is `1950`.
 #' @param end_year Numeric. The ending year for observations to include.
-#' The default is the current year.
-#' @param return_full Logical. If `TRUE`, returns a list containing full
-#' details of the search, including grid information and the matched GBIF name.
-#' If `FALSE`, the function only returns a data frame of observations.
-#' The default is `TRUE`.
+#' T    he default is the current year.
+#' @param return_full Logical. If `TRUE`, returns a list containing full details of the search, including grid information and the matched GBIF name. If `FALSE`, the function only returns a data frame of observations.
+#'      The default is `TRUE`.
+#' @param ... Any additional parameter that can be passed to `rgbif::occ_search`.
 #'
 #' @return A list or data frame:
 #'   - If `return_full = TRUE`, returns a list with the following elements:
@@ -30,10 +27,8 @@
 #'
 #' @details
 #' - The function uses the `rgbif` package to interact with GBIF's API.
-#' - Observations are restricted to those with coordinates and without
-#' geospatial issues.
-#' - For large datasets (exceeding 100,000 records), the function divides the
-#' search area into a grid and downloads data in smaller chunks.
+#' - Observations are restricted to those with coordinates and without geospatial issues.
+#' - For large datasets (exceeding 100,000 records), the function divides the search area into a grid and downloads data in smaller chunks.
 #'
 #' @examples
 #' # Example 1: Basic search for a species
@@ -50,7 +45,7 @@
 get_observations <- function(
     species_name, match_name = TRUE,
     start_year = 1950, end_year = format(Sys.Date(), "%Y"),
-    return_full = TRUE
+    return_full = TRUE, ...
 ) {
   if (!requireNamespace("rgbif", quietly = TRUE)) {
     install.packages("rgbif")
@@ -87,7 +82,8 @@ get_observations <- function(
       hasCoordinate = TRUE,
       hasGeospatialIssue = FALSE,
       year = year_interval,
-      limit = min(num_records, config$GBIFMAX)
+      limit = min(num_records, config$GBIFMAX),
+      ...
     )
 
     df_obs <- check_response(response)
@@ -144,7 +140,8 @@ get_observations <- function(
         year = year_interval,
         decimalLatitude = lat_range,
         decimalLongitude = lon_range,
-        limit = min(num_records, config$GBIFMAX)
+        limit = min(num_records, config$GBIFMAX),
+        ...
       )
 
       df_row <- check_response(response)

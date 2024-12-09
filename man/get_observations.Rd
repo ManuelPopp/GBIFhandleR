@@ -9,27 +9,26 @@ get_observations(
   match_name = TRUE,
   start_year = 1950,
   end_year = format(Sys.Date(), "\%Y"),
-  return_full = TRUE
+  return_full = TRUE,
+  ...
 )
 }
 \arguments{
-\item{species_name}{A character string specifying the scientific name
-of the species to search for.}
+\item{species_name}{A character string specifying the scientific name of the species to search for.}
 
-\item{match_name}{Logical. If `TRUE`, attempts to match the species name
-with a GBIF taxon using a helper function (`match_gbif_name`).
+\item{match_name}{Logical. If `TRUE`, attempts to match the species name with a GBIF taxon using a helper function (`match_gbif_name`).
 The default is `TRUE`.}
 
 \item{start_year}{Numeric. The starting year for observations to include.
 The default is `1950`.}
 
 \item{end_year}{Numeric. The ending year for observations to include.
-The default is the current year.}
+T    he default is the current year.}
 
-\item{return_full}{Logical. If `TRUE`, returns a list containing full
-details of the search, including grid information and the matched GBIF name.
-If `FALSE`, the function only returns a data frame of observations.
+\item{return_full}{Logical. If `TRUE`, returns a list containing full details of the search, including grid information and the matched GBIF name. If `FALSE`, the function only returns a data frame of observations.
 The default is `TRUE`.}
+
+\item{...}{Any additional parameter that can be passed to `rgbif::occ_search`.}
 }
 \value{
 A list or data frame:
@@ -49,10 +48,8 @@ additional information related to the retrieval of the data.
 }
 \details{
 - The function uses the `rgbif` package to interact with GBIF's API.
-- Observations are restricted to those with coordinates and without
-geospatial issues.
-- For large datasets (exceeding 100,000 records), the function divides the
-search area into a grid and downloads data in smaller chunks.
+- Observations are restricted to those with coordinates and without geospatial issues.
+- For large datasets (exceeding 100,000 records), the function divides the search area into a grid and downloads data in smaller chunks.
 }
 \examples{
 # Example 1: Basic search for a species
