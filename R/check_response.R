@@ -9,14 +9,16 @@
 #'
 #' @export
 check_response <- function(x) {
+  response_data <- NULL
+
   if (is.data.frame(x$data)) {
-    data <- x$data
+    response_data <- x$data
   } else if (
     any(unlist(lapply(X = x, FUN = function(i){is.data.frame(i$data)})))
     ) {
     print(
       paste(
-        "Found list of split responses (",
+        "\nFound list of split responses (",
         paste(names(x), collapse = ", "),
         "). Trying to combine.", sep = ""
         )
@@ -32,7 +34,7 @@ check_response <- function(x) {
           # Ensure the data frames have the same columns
           missing <- setdiff(config$COLUMNS, names(element$data))
           for (column in missing) {
-            data[[column]] <- NA
+            element$data[[column]] <- NA
           }
 
           df_list[[df_list_index]] <- element$data[, config$COLUMNS]
@@ -40,22 +42,21 @@ check_response <- function(x) {
       }
     }
 
-    data <- do.call(rbind, df_list)
-
-    if (is.null(data)) {
-      data <- data.frame(matrix(ncol = 0, nrow = 1))
+    if (length(df_list) > 0) {
+      response_data <- do.call(rbind, df_list)
     }
-
-  } else {
-    print("Response data is not a data.frame.")
-    data <- data.frame(matrix(ncol = 0, nrow = 1))
   }
 
-  missing <- setdiff(config$COLUMNS, names(data))
+  if (is.null(response_data)) {
+    warning("Response data is not a data frame.")
+    response_data <- data.frame(matrix(ncol = 0, nrow = 1))
+  }
+
+  missing <- setdiff(config$COLUMNS, names(response_data))
 
   for (column in missing) {
-    data[[column]] <- NA
+    response_data[[column]] <- NA
   }
 
-  return(data[, config$COLUMNS])
+  return(response_data[, config$COLUMNS])
 }
