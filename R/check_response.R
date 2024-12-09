@@ -26,8 +26,17 @@ check_response <- function(x) {
     df_list_index <- 0
     for (element in x) {
       if (is.data.frame(element$data)) {
-        df_list_index <- df_list_index + 1
-        df_list[[df_list_index]] <- element$data
+        if (nrow(element$data) > 0) {
+          df_list_index <- df_list_index + 1
+
+          # Ensure the data frames have the same columns
+          missing <- setdiff(config$COLUMNS, names(element$data))
+          for (column in missing) {
+            data[[column]] <- NA
+          }
+
+          df_list[[df_list_index]] <- element$data[, config$COLUMNS]
+        }
       }
     }
 
@@ -48,5 +57,5 @@ check_response <- function(x) {
     data[[column]] <- NA
   }
 
-  return(data)
+  return(data[, config$COLUMNS])
 }
