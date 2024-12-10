@@ -164,6 +164,9 @@ get_observations <- function(
     }
   }
 
+  # Remove all-NA rows
+  df_obs <- df_obs[!apply(df_obs, 1, function(row){all(is.na(row))}), ]
+
   if (return_full) {
     return(
       list(

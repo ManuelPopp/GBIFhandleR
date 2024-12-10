@@ -62,6 +62,8 @@ clean_coords <- function(
   if (!is.data.frame(x)) {
     stop("Input must be a data frame.")
   }
+  # Remove all-NA rows
+  x <- x[!apply(x, 1, function(row){all(is.na(row))}), ]
 
   if (nrow(x) < 1) {
     warning("Input data frame is empty.")
