@@ -70,30 +70,58 @@ clean_coords <- function(
 
   if (remove_capitals) {
     x <- CoordinateCleaner::cc_cap(x, species = species_column)
+    if (nrow(x) < 1) {
+      warning("No entries left after coordinate checks.")
+      return(x)
+    }
   }
 
   if (remove_centroids) {
     x <- CoordinateCleaner::cc_cen(x, species = species_column)
+    if (nrow(x) < 1) {
+      warning("No entries left after coordinate checks.")
+      return(x)
+    }
   }
 
   if (remove_duplicates) {
     x <- CoordinateCleaner::cc_dupl(x, species = species_column)
+    if (nrow(x) < 1) {
+      warning("No entries left after coordinate checks.")
+      return(x)
+    }
   }
 
   if (remove_gbif) {
     x <- CoordinateCleaner::cc_gbif(x, species = species_column)
+    if (nrow(x) < 1) {
+      warning("No entries left after coordinate checks.")
+      return(x)
+    }
   }
 
   if (remove_hotspots) {
     x <- CoordinateCleaner::cc_aohi(x, species = species_column)
+    if (nrow(x) < 1) {
+      warning("No entries left after coordinate checks.")
+      return(x)
+    }
   }
 
   if (remove_institutions) {
     x <- CoordinateCleaner::cc_inst(x, species = species_column)
+    if (nrow(x) < 1) {
+      warning("No entries left after coordinate checks.")
+      return(x)
+    }
   }
 
   if (remove_invalid) {
     x <- CoordinateCleaner::cc_val(x)
+    if (nrow(x) < 1) {
+      warning("No entries left after coordinate checks.")
+      return(x)
+    }
   }
 
   # Remove outliers
@@ -111,29 +139,53 @@ clean_coords <- function(
 
   if (remove_outliers) {
     x <- do.call(CoordinateCleaner::cc_outl, outlier_args)
+    if (nrow(x) < 1) {
+      warning("No entries left after coordinate checks.")
+      return(x)
+    }
   }
 
   # Remove raster centroids
   if (!is.null(round_settings)) {
     x <- do.call(CoordinateCleaner::cd_round, round_settings)
+    if (nrow(x) < 1) {
+      warning("No entries left after coordinate checks.")
+      return(x)
+    }
   }
 
   if (remove_sea) {
     x <- CoordinateCleaner::cc_sea(x)
+    if (nrow(x) < 1) {
+      warning("No entries left after coordinate checks.")
+      return(x)
+    }
   }
 
   if (remove_urban) {
     x <- CoordinateCleaner::cc_urb(x)
+    if (nrow(x) < 1) {
+      warning("No entries left after coordinate checks.")
+      return(x)
+    }
   }
 
   if (remove_zero) {
     x <- CoordinateCleaner::cc_zero(x)
+    if (nrow(x) < 1) {
+      warning("No entries left after coordinate checks.")
+      return(x)
+    }
   }
 
   # Remove absences
   absences <- which(x$individualCount == 0 | x$occurrenceStatus == "ABSENT")
   if (length(absences) >= 1) {
     x <- x[-absences,]
+  }
+
+  if (nrow(x) < 1) {
+    warning("No entries left after coordinate checks.")
   }
 
   return(x)
