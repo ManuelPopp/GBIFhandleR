@@ -59,6 +59,15 @@ clean_coords <- function(
     outlier_settings = list(tdi = 1000, method = "distance"),
     round_settings = NULL
 ) {
+  if (!is.data.frame(x)) {
+    stop("Input must be a data frame.")
+  }
+
+  if (nrow(x) < 1) {
+    warning("Input data frame is empty.")
+    return(x)
+  }
+
   if (remove_capitals) {
     x <- CoordinateCleaner::cc_cap(x, species = species_column)
   }
@@ -110,7 +119,7 @@ clean_coords <- function(
   }
 
   if (remove_sea) {
-    x <- CoordinateCleaner::cc_sea(x, species = species_column)
+    x <- CoordinateCleaner::cc_sea(x)
   }
 
   if (remove_urban) {
