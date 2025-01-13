@@ -6,7 +6,7 @@ Authors@R: person("Manuel", "Popp", email = "requests@cdpopp.de", role = c("aut"
 Description: This R package provides basic functionalities to download and process species observations from GBIF.
 Encoding: UTF-8
 License: MIT + file LICENSE
-Imports: sf, utils, rgbif, CoordinateCleaner
+Imports: sf, utils, rgbif, CoordinateCleaner, dplyr, httr, jsonlite
 Suggests: 
     progress,
     testthat (>= 3.0.0)

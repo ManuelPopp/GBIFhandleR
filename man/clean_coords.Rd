@@ -19,7 +19,9 @@ clean_coords(
   remove_urban = TRUE,
   remove_zero = TRUE,
   outlier_settings = list(tdi = 1000, method = "distance"),
-  round_settings = NULL
+  round_settings = NULL,
+  ref_urban = NULL,
+  ref_sea = NULL
 )
 }
 \arguments{
@@ -53,6 +55,12 @@ clean_coords(
 
 \item{round_settings}{A list of additional settings. If not `NULL`, these settings are passed to `CoordinateCleaner::cd_round`.
 Default is `NULL`, which uses standard parameters (`tdi = 1000`, `method = "distance"`, `min_occs = 4`).}
+
+\item{ref_urban}{A SpatVector (geometry: Polygons) similar to the default used as reference to mask urban areas.
+Default is naturalearth::ne_download(scale = 110, type = "land", category = "physical", returnclass = "sf")}
+
+\item{ref_sea}{A SpatVector (geometry: Polygons) similar to the default used as reference data to mask oceans.
+Default is naturalearth::ne_download(scale = 110, type = "land", category = "physical", returnclass = "sf")}
 }
 \value{
 A cleaned data frame with problematic records removed based on the specified criteria.

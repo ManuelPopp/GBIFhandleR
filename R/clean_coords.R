@@ -20,6 +20,10 @@
 #' @param outlier_settings A list of additional settings for outlier detection, passed to `CoordinateCleaner::cc_outl`.
 #' @param round_settings A list of additional settings. If not `NULL`, these settings are passed to `CoordinateCleaner::cd_round`.
 #'   Default is `NULL`, which uses standard parameters (`tdi = 1000`, `method = "distance"`, `min_occs = 4`).
+#' @param ref_urban A SpatVector (geometry: Polygons) similar to the default used as reference to mask urban areas.
+#'   Default is naturalearth::ne_download(scale = 110, type = "land", category = "physical", returnclass = "sf")
+#' @param ref_sea A SpatVector (geometry: Polygons) similar to the default used as reference data to mask oceans.
+#'   Default is naturalearth::ne_download(scale = 110, type = "land", category = "physical", returnclass = "sf")
 #'
 #' @return A cleaned data frame with problematic records removed based on the specified criteria.
 #'
@@ -57,7 +61,9 @@ clean_coords <- function(
     remove_urban = TRUE,
     remove_zero = TRUE,
     outlier_settings = list(tdi = 1000, method = "distance"),
-    round_settings = NULL
+    round_settings = NULL,
+    ref_urban = NULL,
+    ref_sea = NULL
 ) {
   if (!is.data.frame(x)) {
     stop("Input must be a data frame.")
@@ -157,7 +163,12 @@ clean_coords <- function(
   }
 
   if (remove_sea) {
-    x <- CoordinateCleaner::cc_sea(x)
+    if (is.null(ref_sea)){
+      x <- CoordinateCleaner::cc_sea(x)
+    } else {
+      x <- CoordinateCleaner::cc_sea(x, ref = ref_sea)
+    }
+
     if (nrow(x) < 1) {
       warning("No entries left after coordinate checks.")
       return(x)
@@ -165,7 +176,12 @@ clean_coords <- function(
   }
 
   if (remove_urban) {
-    x <- CoordinateCleaner::cc_urb(x)
+    if (is.null(ref_urban)) {
+      x <- CoordinateCleaner::cc_urb(x)
+    } else {
+      x <- CoordinateCleaner::cc_urb(x, ref = ref_urban)
+    }
+
     if (nrow(x) < 1) {
       warning("No entries left after coordinate checks.")
       return(x)
