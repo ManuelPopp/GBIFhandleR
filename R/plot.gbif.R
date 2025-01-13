@@ -19,9 +19,9 @@
 #'   - Points representing GBIF occurrence records.
 #'
 #' @details
-#' - The function uses the `terra` package for handling spatial objects and plotting.
+#' - The function uses the `sf` package for handling spatial objects and plotting.
 #' - Occurrence records are visualized as points, and grid cells are overlaid as polygons.
-#' - The `landmass` sfc_POLYGON, included in the package as a `.rda` file, is used as the default background map.
+#' - The `landmass` `sfc_POLYGON`, included in this package as a `.rda` file, is used as the default background map.
 #'
 #' @examples
 #' \dontrun{
@@ -51,8 +51,11 @@ plot.gbif <- function(
   } else {
     background_map <- background
   }
-
-  plot(background_map, ...)
+  # Get current plot settings
+  original_par <- par()
+  # Plot
+  par(mar = c(0, 0, 0, 0), mfrow = c(1, 1))
+  plot(sf::st_geometry(background_map), ...)
   for (r in 1:nrow(grid)) {
     row <- grid[r, ]
     bbox <- matrix(
@@ -72,5 +75,12 @@ plot.gbif <- function(
     data, coords = c("decimalLongitude", "decimalLatitude"), crs = 4326
   )
 
-  plot(all_entries, add = TRUE)
+  plot(
+    sf::st_geometry(all_entries), add = TRUE, pch = 16, cex = 0.5,
+    col = grDevices::rgb(0, 102, 102, 75, maxColorValue = 255)
+    )
+  # Reset plot setting
+  readonly_params <- c("cin", "cra", "csi", "cxy", "din", "page")
+  reset_par <- original_par[setdiff(names(original_par), readonly_params)]
+  par(reset_par)
 }

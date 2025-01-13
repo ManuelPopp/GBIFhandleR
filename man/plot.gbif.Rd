@@ -4,7 +4,7 @@
 \alias{plot.gbif}
 \title{Plot GBIF search results}
 \usage{
-\method{plot}{gbif}(x, background = "default", cell_colour = "red", ...)
+plot.gbif(x, background = "default", cell_colour = "red", ...)
 }
 \arguments{
 \item{x}{A list containing GBIF search results, typically the output from `get_observations()`.
@@ -31,9 +31,9 @@ This function does not return a value. It produces a plot showing:
 This function visualizes the results of a GBIF search, including occurrence records and grid cells used in gridded downloads, over a specified background map.
 }
 \details{
-- The function uses the `terra` package for handling spatial objects and plotting.
+- The function uses the `sf` package for handling spatial objects and plotting.
 - Occurrence records are visualized as points, and grid cells are overlaid as polygons.
-- The `landmass` sfc_POLYGON, included in the package as a `.rda` file, is used as the default background map.
+- The `landmass` `sfc_POLYGON`, included in this package as a `.rda` file, is used as the default background map.
 }
 \examples{
 \dontrun{
