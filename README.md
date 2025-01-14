@@ -1,4 +1,4 @@
-# GBIFhandleR - A simple R package to obtain GBIF species observations
+# GBIFhandleR - A simple R package to obtain and handle GBIF species observations
 
 This R package provides basic functionalities to download and process species observations from GBIF.
 
@@ -66,6 +66,7 @@ for (file in files) {
   obs[["data"]] <- cleaned
   
   GBIFhandleR::save_observations(
+    obs,
     file.path(dir_cln, basename(file))
   )
 }
@@ -77,7 +78,7 @@ It might be of interest whether an individual or a population observed at a give
 
 ```r
 species <- obs$gbifname
-range <- GBIFhandleR::get_range(species)
+sp_range <- GBIFhandleR::get_range(species)
 
 ```
 
@@ -87,3 +88,9 @@ plot(range)
 
 ```
 ![Native and introduced range of Heteropogon contortus](fig/Heteropogon_contortus_range.png)
+
+Let's assign native/introduced status to the locations of observed individuals/populations...
+```r
+locations <- assign_status(observations, range)
+
+```
