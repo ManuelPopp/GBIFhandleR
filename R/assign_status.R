@@ -4,7 +4,7 @@
 #' to assign native/introduced status to each data point.
 #'
 #' @param observations A list containing observation data and metadata.
-#' @param range A Distribution object (typicaly created via \code{\link{get_range}}).
+#' @param sp_range A Distribution object (typicaly created via \code{\link{get_range}}).
 #'
 #' @return Spatial points with an attribute `status` which is either `native`, `introduced`, or `unknown`.
 #'
@@ -13,10 +13,10 @@
 #'
 #' @import sf
 #' @export
-assign_status <- function(observations, range) {
+assign_status <- function(observations, sp_range) {
   obs <- observations$data
-  native_range <- sf::st_union(range@geo_distribution$native)
-  exotic_range <- sf::st_union(range@geo_distribution$introduced)
+  native_range <- sf::st_union(sp_range@geo_distribution$native)
+  exotic_range <- sf::st_union(sp_range@geo_distribution$introduced)
 
   obs$decimalLongitude <- as.numeric(obs$decimalLongitude)
   obs$decimalLatitude <- as.numeric(obs$decimalLatitude)
@@ -35,18 +35,14 @@ assign_status <- function(observations, range) {
     crs = 4326
   )
 
-  native_idx <- sf::st_intersects(
-    obs_points, native_range, relation = "intersects"
-    )
-  exotic_idx <- sf::st_intersects(
-    obs_points, exotic_range, relation = "intersects"
-    )
+  native_idx <- sf::st_intersects(obs_points, native_range, sparse = FALSE)
+  exotic_idx <- sf::st_intersects(obs_points, exotic_range, sparse = FALSE)
 
   status <- ifelse(
     native_idx, "native", ifelse(exotic_idx, "introduced", "unknown")
     )
 
-  obs_points$status <- status
+  obs_points["status"] <- factor(status)
 
   return(obs_points)
 }

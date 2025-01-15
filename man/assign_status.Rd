@@ -4,12 +4,12 @@
 \alias{assign_status}
 \title{Assign native/introduced status to observations}
 \usage{
-assign_status(observations, range)
+assign_status(observations, sp_range)
 }
 \arguments{
 \item{observations}{A list containing observation data and metadata.}
 
-\item{range}{A Distribution object (typicaly created via \code{\link{get_range}}).}
+\item{sp_range}{A Distribution object (typicaly created via \code{\link{get_range}}).}
 }
 \value{
 Spatial points with an attribute `status` which is either `native`, `introduced`, or `unknown`.

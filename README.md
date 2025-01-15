@@ -84,13 +84,34 @@ sp_range <- GBIFhandleR::get_range(species)
 
 We can plot the places where the taxon is considered native or introduced by simply running:
 ```r
-plot(range)
+plot(sp_range)
 
 ```
 ![Native and introduced range of Heteropogon contortus](fig/Heteropogon_contortus_range.png)
 
 Let's assign native/introduced status to the locations of observed individuals/populations...
 ```r
-locations <- assign_status(observations, range)
+locations <- assign_status(observations, sp_range)
 
 ```
+
+Let's plot the observations for *Heteropogon contortus* coloured by nativeness/non-nativeness:
+```r
+color_map <- c(
+  native = "aquamarine4",
+  introduced = "firebrick4",
+  unknown = "mediumpurple4"
+  )
+
+par(mar = c(0, 0, 0, 0))
+plot(sf::st_geometry(GBIFhandleR::tdwg))
+plot(
+  locations["status"],
+  add = TRUE, cex = 0.5, pch = 16,
+  col = color_map[as.character(locations$status)]
+  )
+legend("bottomleft", legend = names(color_map), col = color_map, pch = 16)
+
+```
+
+![Native and introduced range of Heteropogon contortus](fig/Observation_status.png)

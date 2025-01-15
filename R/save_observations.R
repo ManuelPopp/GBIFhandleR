@@ -22,7 +22,7 @@ save_observations <- function(observations, filename) {
   utils::write.table(
     data, filename,
     sep = ",", row.names = FALSE, col.names = TRUE,
-    append = FALSE, quote = FALSE
+    append = FALSE, quote = TRUE
   )
   obsdata <- base::readLines(filename)
   output <- c(metadata, obsdata)

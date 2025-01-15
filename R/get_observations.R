@@ -166,6 +166,8 @@ get_observations <- function(
 
   # Remove all-NA rows
   df_obs <- df_obs[!apply(df_obs, 1, function(row){all(is.na(row))}), ]
+  df_obs$decimalLatitude <- as.numeric(df_obs$decimalLatitude)
+  df_obs$decimalLongitude <- as.numeric(df_obs$decimalLongitude)
 
   if (return_full) {
     return(

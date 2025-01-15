@@ -36,7 +36,10 @@
 #'
 #' @export
 get_range <- function(species_name) {
-  species_code <- search_powo_code_by_name("Quercus robur")
+  species_name <- paste(
+    stringr::str_split(species_name, " ")[[1]][c(1, 2)], collapse = " "
+    )
+  species_code <- search_powo_code_by_name(species_name)
   locations <- get_distribution_powo(species_code)
   sdist <- spatial_distribution(locations)
   new("Distribution", species_name = species_name, geo_distribution = sdist)
